@@ -1,0 +1,105 @@
+
+# See http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+server:
+  port: 8001
+  #undertow
+  undertow:
+    accesslog:
+      dir: ./log
+      prefix: access_log.
+      suffix: log
+      rotate: true
+    buffer-size: 1024
+    direct-buffers: true
+    max-http-post-size: 0
+    io-threads: 2
+    worker-threads: 16
+
+
+spring:
+  thymeleaf:
+          cache: false
+  main:
+   allow-bean-definition-overriding: true
+  data:
+    redis:
+      repositories:
+        enabled: false
+  #redis
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password:
+    lettuce:
+      pool:
+        max-active: 1000
+        max-wait: -1
+        max-idle: 10
+        min-idle: 2
+    timeout: 3000
+
+  #jpa
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        event:
+          merge:
+            entity_copy_observer: allow
+    open-in-view: true
+
+
+  #jackson
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    serialization.fail-on-empty-beans: false
+
+
+  #mysql
+  datasource:
+    url: jdbc:mysql://localhost:3306/core_local?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&serverTimezone=GMT%2B8&useSSL=false
+    name: local
+    username: root
+    password: root123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    max-idle: 10
+    max-wait: 10000
+    min-idle: 5
+    initial-size: 5
+
+
+#devtools
+  devtools:
+    restart:
+      enabled: true
+
+#logging
+logging:
+  level:
+    jdbc: OFF
+  jdbc:
+    sqltiming: DEBUG
+    resultsettable: DEBUG
+
+
+
+
+
+
+
+
+
+#mybatis:
+#  mapper-locations: classpath:mapping/*.xml
+#  type-aliases-package: com.learn.myweb.model
+
+
+
+

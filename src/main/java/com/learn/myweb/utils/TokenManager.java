@@ -21,6 +21,8 @@ public class TokenManager {
 
     private final String tokenSecret = "private_key";
 
+    private final String tokenKey = "private_key";
+
     @Autowired
     private StringRedisService stringRedisService;
 

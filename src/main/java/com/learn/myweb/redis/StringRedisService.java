@@ -1,5 +1,6 @@
 package com.learn.myweb.redis;
 
+import com.mysql.cj.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
@@ -15,11 +16,9 @@ public class StringRedisService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-
     public String listLPop(String key) {
         return stringRedisTemplate.opsForList().leftPop(key);
     }
-
 
     public Object hashGet(String key, String hashKey) {
         return stringRedisTemplate.opsForHash().get(key, hashKey);
@@ -37,11 +36,10 @@ public class StringRedisService {
         if (stringRedisTemplate.hasKey(key)) {
             stringRedisTemplate.opsForList().trim(key, 1, 0);
         }
-
     }
 
     /**
-     * list  push 进入redis
+     * list push 进入redis
      *
      * @param key
      * @param valueList
@@ -49,7 +47,6 @@ public class StringRedisService {
     public void listRpushAll(String key, List<String> valueList) {
         stringRedisTemplate.opsForList().rightPushAll(key, valueList);
     }
-
 
     public List<String> listFindAll(String key) {
         if (!judgeKey(key)) {
@@ -62,7 +59,6 @@ public class StringRedisService {
         stringRedisTemplate.opsForList().rightPush(key, value);
     }
 
-
     public Long incrmentRedisKey(String key) {
         RedisAtomicLong incrmentkey = new RedisAtomicLong(key, stringRedisTemplate.getConnectionFactory());
         Long incrment = incrmentkey.getAndIncrement();
@@ -72,8 +68,16 @@ public class StringRedisService {
         return incrment;
     }
 
+    public void putkeyValue(String key, String value, long expirTime, TimeUnit timeUnit) {
+        stringRedisTemplate.opsForValue().set(key, value, expirTime, timeUnit);
+    }
 
- 
+    public void setKeyExpirDate(String key, long time, TimeUnit timeUnit) {
+        stringRedisTemplate.expire(key, time, timeUnit);
+    }
 
-
+    public String get(String key)
+    {
+        return stringRedisTemplate.opsForValue().get(key);
+    }
 }

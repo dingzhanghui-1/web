@@ -10,7 +10,7 @@ import com.learn.myweb.repository.UserRepository;
 
 @RequestMapping(value = "/users", produces = { "application/json;charset=UTF-8" })
 @RestController
-public class UserController {
+public class UserController extends BaseController {
 
     @Autowired
     private UserRepository userRepository;

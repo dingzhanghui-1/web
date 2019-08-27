@@ -12,6 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class TokenManager {
@@ -44,8 +45,11 @@ public class TokenManager {
                 .setNotBefore(nowDate)
                 .signWith(signatureAlgorithm, signingKey);
         String token = builder.compact();
-        stringRedisService.
+        stringRedisService.putkeyValue(token, userId, 15, TimeUnit.MINUTES);
         return token;
     }
+
+
+    public
 
 }

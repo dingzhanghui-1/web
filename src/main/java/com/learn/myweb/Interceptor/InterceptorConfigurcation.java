@@ -15,6 +15,6 @@ public class InterceptorConfigurcation extends WebMvcConfigurationSupport {
     @Override protected void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("**/login");
+                .excludePathPatterns("/","/users/login");
     }
 }

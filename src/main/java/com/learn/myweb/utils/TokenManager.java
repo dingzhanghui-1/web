@@ -1,6 +1,7 @@
 package com.learn.myweb.utils;
 
 import com.learn.myweb.redis.StringRedisService;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,39 +18,34 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class TokenManager {
 
-
     private final long expireTime = 15 * 60 * 1000;
 
     private final String tokenSecret = "private_key";
 
-    private final String tokenKey = "private_key";
-
     @Autowired
     private StringRedisService stringRedisService;
 
+    private SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+    private byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(tokenSecret);
+
+    private SecretKey signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
     public String createToken(String userId) {
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         long nowMillis = System.currentTimeMillis();
         Date nowDate = new Date(nowMillis);
         Date expiredDate = new Date(nowMillis + expireTime);
-        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(tokenSecret);
-        SecretKey signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
-        JwtBuilder builder = Jwts.builder()
-                .setId(UUID.randomUUID().toString())
-                .setHeaderParam("type", "jwt")
-                .claim("userId", userId)
-                .setIssuedAt(nowDate)
-                .setIssuer("admin")
-                .setExpiration(expiredDate)
-                .setNotBefore(nowDate)
-                .signWith(signatureAlgorithm, signingKey);
+        JwtBuilder builder = Jwts.builder().setId(UUID.randomUUID().toString()).setHeaderParam("type", "jwt")
+                .claim("userId", userId).setIssuedAt(nowDate).setIssuer("admin").setExpiration(expiredDate)
+                .setNotBefore(nowDate).signWith(signatureAlgorithm, signingKey);
         String token = builder.compact();
         stringRedisService.putkeyValue(token, userId, 15, TimeUnit.MINUTES);
         return token;
     }
 
-
-    public
-
+    public String parseUserIdFromToken(String token) {
+        Claims claims = Jwts.parser().setSigningKey(signingKey).parseClaimsJws(token).getBody();
+        String userId = (String) claims.get("userId");
+        return userId;
+    }
 }

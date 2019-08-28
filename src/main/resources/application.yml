@@ -67,7 +67,8 @@ spring:
     url: jdbc:mysql://localhost:3306/core_local?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&serverTimezone=GMT%2B8&useSSL=false
     name: local
     username: root
-    password: root123
+    #password: root123
+    password: itnen2019
     driver-class-name: com.mysql.cj.jdbc.Driver
     max-idle: 10
     max-wait: 10000

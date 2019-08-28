@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.learn.myweb.controller.BaseController;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,10 +24,17 @@ public class TokenInterceptor implements HandlerInterceptor {
     @Autowired
     private TokenManager tokenManager;
 
+    @Autowired
+    private BaseController baseController;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        return verifyToken(request);
+        boolean verifyFlag = verifyToken(request);
+        if (!verifyToken(request)) {
+            baseController.dealInvalidToken(response);
+        }
+        return verifyFlag;
     }
 
     @Override
@@ -39,7 +47,6 @@ public class TokenInterceptor implements HandlerInterceptor {
             throws Exception {
     }
 
-    
     public boolean verifyToken(HttpServletRequest request) {
         String token = request.getHeader("token");
         if (null != token && !StringUtils.isEmpty(token)) {

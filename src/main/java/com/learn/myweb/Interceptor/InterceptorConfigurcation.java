@@ -16,5 +16,6 @@ public class InterceptorConfigurcation extends WebMvcConfigurationSupport {
         registry.addInterceptor(tokenInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/","/users/login");
+        super.addInterceptors(registry);
     }
 }
